@@ -80,7 +80,7 @@ public final class Complex {
         }
 
         if (Math.abs(real) <= threshold) {
-            return format(imaginary);
+            return format(imaginary) + "i";
         }
 
         String sign = imaginary >= 0 ? " + " : " - ";
