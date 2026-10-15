@@ -11,7 +11,7 @@ public class Main {
     //private static Complex currentDeterminant; // кэшируем детерминант
     private static boolean currentMatrixFlag = false;
 
-    public static void main(String[] args) {
+    static void main() {
         System.out.println("=== Калькулятор матриц ===");
 
         while (true) {
@@ -131,7 +131,7 @@ private static void divide() {
         Matrix result;
 
         if (type == 1) {
-            double number = readDouble("Введите вещественное число: ");
+            double number = readDouble();
             result = currentMatrix.multiply(number);
         } else if (type == 2) {
             Complex number = readComplex(
@@ -185,7 +185,7 @@ private static void divide() {
     }
 
     private static void requireCurrentMatrix() { // проверка на то что матрица для операции вообще существует
-        if (!currentMatrixFlag || currentMatrix == null) {
+        if (!currentMatrixFlag) {
             throw new IllegalArgumentException(
                     "Сначала введите матрицу или получите матричный результат"
             );
@@ -231,48 +231,48 @@ private static void divide() {
     }
 
     private static Complex parseComplex(String input) {
-        String value = input.replace(" ", "");
 
-        if (!value.endsWith("i")) {
-            return new Complex(Double.parseDouble(value), 0);
+        if (!input.endsWith("i")) {
+            return new Complex(Double.parseDouble(input), 0);
         }
 
-        String imaginaryPart = value.substring(0, value.length() - 1);
+        input = input.substring(0, input.length() - 1);
 
         // Числа i, -i и +i
-        if (imaginaryPart.isEmpty() || imaginaryPart.equals("+")) {
-            imaginaryPart = "1";
-        } else if (imaginaryPart.equals("-")) {
-            imaginaryPart = "-1";
+        if (input.isEmpty() || input.equals("+")) {
+            input = "1";
+        } else if (input.equals("-")) {
+            input = "-1";
         }
 
         // Ищем знак между вещественной и мнимой частями
         int separator = -1;
 
-        for (int i = 1; i < imaginaryPart.length(); i++) {
-            char c = imaginaryPart.charAt(i);
+        for (int i = 1; i < input.length(); i++) {
+            char c = input.charAt(i);
 
             if (c == '+' || c == '-') {
                 separator = i;
+                break;
             }
         }
 
-        if (separator == -1) {
+        if (separator == -1) { // нет знака значит только мнимая часть
             return new Complex(
                     0,
-                    Double.parseDouble(imaginaryPart)
+                    Double.parseDouble(input)
             );
         }
 
-        double real = Double.parseDouble(
-                imaginaryPart.substring(0, separator)
+        double realParsed = Double.parseDouble(
+                input.substring(0, separator)
         );
 
-        double imaginary = Double.parseDouble(
-                imaginaryPart.substring(separator)
+        double imaginaryParsed = Double.parseDouble(
+                input.substring(separator)
         );
 
-        return new Complex(real, imaginary);
+        return new Complex(realParsed, imaginaryParsed);
     }
 
     private static int readPositiveInt(String message) {
@@ -299,14 +299,14 @@ private static void divide() {
         }
     }
 
-    private static double readDouble(String message) {
+    private static double readDouble() {
         while (true) {
-            System.out.print(message);
+            System.out.print("Введите вещественное число: ");
 
             try {
                 return Double.parseDouble(scanner.next());
             } catch (NumberFormatException e) {
-                System.out.println("Введите вещественное число.");
+                System.out.println("Введите вещественное число: ");
             }
         }
     }
