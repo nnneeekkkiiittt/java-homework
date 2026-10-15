@@ -66,7 +66,7 @@ public final class Complex {
     }
 
     public boolean isZero() {
-        return abs() <= threshold;
+        return abs() == 0;
     }
 
     @Override
